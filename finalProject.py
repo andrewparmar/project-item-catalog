@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, request
+from flask import Flask, render_template, url_for, request, redirect
 # import jsonify
 app = Flask(__name__)
 
@@ -24,7 +24,6 @@ session = DBSession()
 # item =  {'name':'Cheese Pizza','description':'made with fresh cheese','price':'$5.99','course' :'Entree'}
 
 
-
 @app.route('/')
 @app.route('/restaurants/')
 def showRestaurants():
@@ -33,13 +32,20 @@ def showRestaurants():
 
 @app.route('/restaurants/new', methods=['GET','POST'])
 def newRestaurant():
-    # if request.method == 'POST':
-    #     restaurants.append[request.form['newRest']]
-    #     return redirect(url_for('home'))
+    if request.method == 'POST':
+        newRestaurant = Restaurant(name = request.form['newRest'])
+        session.add(newRestaurant)
+        session.commit()
+        return redirect(url_for('showRestaurants'))
     return render_template('newRestaurants.html')
 
 @app.route('/restaurants/<int:restaurant_id>/edit', methods=['GET','POST'])
 def editRestaurant(restaurant_id):
+    if request.method == 'POST':
+        # newRestaurant = Restaurant(name = request.form['newRest'])
+        # session.add(newRestaurant)
+        editRestaurant = Restaurant(name = request.form['name'],restaurant_id = restaurant_id)
+        return redirect(url_for('showRestaurants'))
     return render_template('editRestaurants.html', restaurant_id = restaurant_id)
 
 @app.route('/restaurants/<int:restaurant_id>/delete', methods=['GET','POST'])

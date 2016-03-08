@@ -3,10 +3,14 @@
 
 <h1> Add a New Restaurant </h1>
 
-<form method='POST' enctype='multipart/form-data' action='/restaurants/new'>
+<!-- <form method='POST' enctype='multipart/form-data' action='{{ url_for('newRestaurant') }}'> -->
 
-<input name='newRest' type='text' placeholder = 'New Restraunt Name'>
+<form method='POST' enctype='multipart/form-data' action=''>
 
-<input type='submit' value='Create'>
+	<input name='newRest' type='text' placeholder='New Restraunt Name'>
+
+	<input type='submit' value='Create'>
+
+</form>
 
 {% endblock %}
