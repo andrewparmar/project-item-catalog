@@ -77,11 +77,25 @@ def newMenuItem(restaurant_id):
 
 @app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/edit', methods=['GET','POST'])
 def editMenuItem(restaurant_id, menu_id):
+    if request.method == 'POST':
+        menuItem = session.query(MenuItem).filter(MenuItem.restaurant_id == restaurant_id,MenuItem.id == menu_id).one()
+        menuItem.name = request.form['editMenu']
+        session.commit()
+        return redirect(url_for('showMenu', restaurant_id = restaurant_id))
     return render_template('editMenuItem.html', restaurant_id = restaurant_id, menu_id = menu_id)
 
 @app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/delete', methods=['GET','POST'])
 def deleteMenuItem(restaurant_id, menu_id):
-    return render_template('deleteMenuItem.html', restaurant_id = restaurant_id, menu_id = menu_id)
+    if request.method == 'POST':
+        try:
+            menuItem = session.query(MenuItem).filter(MenuItem.restaurant_id == restaurant_id,MenuItem.id == menu_id).one()
+            session.delete(menuItem)
+            session.commit()
+            return redirect(url_for('showMenu', restaurant_id = restaurant_id))
+        except:
+            return redirect(url_for('showMenu', restaurant_id = restaurant_id))
+    jam = session.query(MenuItem).filter(MenuItem.restaurant_id == restaurant_id,MenuItem.id == menu_id).one()
+    return render_template('deleteMenuItem.html', restaurant_id = restaurant_id, jam = jam)
 
 
 # @app.route('/restaurants/JSON')
