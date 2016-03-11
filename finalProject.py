@@ -73,7 +73,8 @@ def newMenuItem(restaurant_id):
         session.add(newMenu)
         session.commit()
         return redirect(url_for('showRestaurants'))
-    return render_template('newMenuItem.html', restaurant_id = restaurant_id)
+    name = session.query(Restaurant.name).filter(Restaurant.id == restaurant_id).one()
+    return render_template('newMenuItem.html', restaurant_id = restaurant_id, name = name)
 
 @app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/edit', methods=['GET','POST'])
 def editMenuItem(restaurant_id, menu_id):
@@ -105,13 +106,3 @@ def deleteMenuItem(restaurant_id, menu_id):
 if __name__ == '__main__':
 	app.debug = True
 	app.run(host = '0.0.0.0', port=5000 )
-
-
-
-
-    # restaurants = session.query(Restaurant).all()
-    # output = ""
-    # for rest in restaurants:
-    #     output += rest.name
-    #     output += "</br>"
-    # return output
