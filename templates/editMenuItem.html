@@ -5,7 +5,14 @@
 
 <form method='POST' enctype='multipart/form-data' action = '' >
 
-<input name = 'editMenu' type='text' placeholder = {{menu_id}} >
+<input name = 'editMenu' type='text' placeholder = {{jam.name}} >
+<input name = 'editDescription' type='text' placeholder = {{menu_id}} >
+<input name = 'editPrice' type='text' placeholder = {{menu_id}} >
+
+<input type="radio" name="course" value="Appetizer"> Appetizer<br>
+<input type="radio" name="course" value="Lunch"> Lunch<br>
+<input type="radio" name="course" value="Dinner"> Dinner<br>
+<input type="radio" name="course" value="Beverage"> Beverage
 
 <input type = 'submit' value = 'Rename'>
 

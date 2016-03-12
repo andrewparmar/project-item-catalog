@@ -69,7 +69,8 @@ def showMenu(restaurant_id):
 @app.route('/restaurants/<int:restaurant_id>/menu/new', methods=['GET','POST'])
 def newMenuItem(restaurant_id):
     if request.method == 'POST':
-        newMenu = MenuItem(name = request.form['newRest'], restaurant_id = restaurant_id)
+        newMenu = MenuItem(name = request.form['newItem'], restaurant_id = restaurant_id, description = request.form['newDescription'], price=request.form['newPrice'], course = request.form['course'])
+        # newMenu = MenuItem(name = request.form['newItem'], restaurant_id = restaurant_id)
         session.add(newMenu)
         session.commit()
         return redirect(url_for('showRestaurants'))
@@ -81,9 +82,13 @@ def editMenuItem(restaurant_id, menu_id):
     if request.method == 'POST':
         menuItem = session.query(MenuItem).filter(MenuItem.restaurant_id == restaurant_id,MenuItem.id == menu_id).one()
         menuItem.name = request.form['editMenu']
+        menuItem.description = request.form['editDescription'] 
+        menuItem.price = request.form['editPrice'] 
+        menuItem.course = request.form['editCourse'] 
         session.commit()
         return redirect(url_for('showMenu', restaurant_id = restaurant_id))
-    return render_template('editMenuItem.html', restaurant_id = restaurant_id, menu_id = menu_id)
+    jam = session.query(MenuItem).filter(MenuItem.restaurant_id == restaurant_id,MenuItem.id == menu_id).one()
+    return render_template('editMenuItem.html', restaurant_id = restaurant_id, menu_id = menu_id, jam = jam)
 
 @app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/delete', methods=['GET','POST'])
 def deleteMenuItem(restaurant_id, menu_id):
