@@ -5,15 +5,23 @@
 
 <form method='POST' enctype='multipart/form-data' action = '' >
 
+<h4>Name:</h4>
 <input name = 'editMenu' type='text' placeholder = {{jam.name}} >
-<input name = 'editDescription' type='text' placeholder = {{menu_id}} >
-<input name = 'editPrice' type='text' placeholder = {{menu_id}} >
+<br>
+<h4>Description:</h4>
+<input name = 'editDescription' type='text' placeholder = {{jam.description}} >
+<br>
+<h4>Price:</h4>
+<input name = 'editPrice' type='text' placeholder = {{jam.price}} >
+<h4>Course:</h4>
 
-<input type="radio" name="course" value="Appetizer"> Appetizer<br>
-<input type="radio" name="course" value="Lunch"> Lunch<br>
-<input type="radio" name="course" value="Dinner"> Dinner<br>
-<input type="radio" name="course" value="Beverage"> Beverage
+<input type="radio" name="editCourse" value="Appetizer"> Appetizer<br>
+<input type="radio" name="editCourse" value="Lunch"> Lunch<br>
+<input type="radio" name="editCourse" value="Dinner"> Dinner<br>
+<input type="radio" name="editCourse" value="Beverage"> Beverage
 
+
+<br><br>
 <input type = 'submit' value = 'Rename'>
 
 </form>
