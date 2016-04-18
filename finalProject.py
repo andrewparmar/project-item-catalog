@@ -13,16 +13,6 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
-# #Fake Restaurants
-# restaurant = {'name': 'The CRUDdy Crab', 'id': '1'}
-
-# # restaurants = [{'name': 'The CRUDdy Crab', 'id': '1'}, {'name':'Blue Burgers', 'id':'2'},{'name':'Taco Hut', 'id':'3'}]
-
-# #Fake Menu Items
-# items = [ {'name':'Cheese Pizza', 'description':'made with fresh cheese', 'price':'$5.99','course' :'Entree', 'id':'1'}, {'name':'Chocolate Cake','description':'made with Dutch Chocolate', 'price':'$3.99', 'course':'Dessert','id':'2'},{'name':'Caesar Salad', 'description':'with fresh organic vegetables','price':'$5.99', 'course':'Entree','id':'3'},{'name':'Iced Tea', 'description':'with lemon','price':'$.99', 'course':'Beverage','id':'4'},{'name':'Spinach Dip', 'description':'creamy dip with fresh spinach','price':'$1.99', 'course':'Appetizer','id':'5'} ]
-# item =  {'name':'Cheese Pizza','description':'made with fresh cheese','price':'$5.99','course' :'Entree'}
-
-
 @app.route('/')
 @app.route('/restaurants/')
 def showRestaurants():
@@ -106,15 +96,38 @@ def deleteMenuItem(restaurant_id, menu_id):
 def showRestaurantsJSON():
     # session.query
     # jam = session.query(MenuItem).filter(MenuItem.restaurant_id == 1,MenuItem.id == 1).one()
-    restaurants = session.query(Restaurant).all()
+    # restaurants = session.query(Restaurant).all()
+    restaurants = session.query(MenuItem).all()
     return jsonify(restaurants=[r.serialize for r in restaurants])
     # return jsonify(restaurants=[1,2,3,4,5,6])
 
-@app.route('/restaurants/<int:restaurant_id>/menu/JSON')
-def showRestaurantMenuJSON(restaurant_id):
-    menu = session.query(MenuItem).join(MenuItem.restaurant).filter(Restaurant.id==restaurant_id)
-    print menu
-    return jsonify(menu=[m.serialize for m in menu])
+# @app.route('/restaurants/<int:restaurant_id>/menu/JSON')
+@app.route('/restaurants/menu/JSON')
+# def showRestaurantMenuJSON(restaurant_id):
+def showRestaurantMenuJSON():
+    # # print restaurant_id
+    # menu = session.query(MenuItem).join(MenuItem.restaurant).filter(Restaurant.id==restaurant_id).all()
+    # print menu
+    # for m in menu:
+    #     print m.name
+    # return jsonify(menu=[m.serialize for m in menu])
+    # # return "Hello World"
+    # restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
+    # menu = session.query(MenuItem).filter_by(restaurant_id=restaurant_id).all()
+    menu = session.query(MenuItem).all()
+    # print "test"
+    # menuitems = []
+    # for m in menu:
+    #     test = m.serialize
+    #     # menuitems.append[1]
+    #     menuitems.append(test)
+
+    # print menu[1].serialize
+    # print items
+    # return jsonify(MenuItems=[i.serialize for i in items])
+    return jsonify(menu=menuitems)
+    # return jsonify(menu = [m.serialize for m in menu])
+    # return "Hello World"
 
 # @app.route('/restaurants/restaurant_id/menu/menu_id/JSON')
 
