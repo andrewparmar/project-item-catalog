@@ -52,7 +52,11 @@ class MenuItem(Base):
         """Return object in seailized format"""
         return {
             'id': self.id,
-            'name': self.name
+            'name': self.name,
+            'description': self.description,
+            'price': self.price,
+            'course': self.course,
+            'restaurant_id': self.restaurant_id,
         }
 
 engine = create_engine('sqlite:///restaurantmenu.db')

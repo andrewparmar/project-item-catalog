@@ -94,42 +94,18 @@ def deleteMenuItem(restaurant_id, menu_id):
 
 @app.route('/restaurants/JSON')
 def showRestaurantsJSON():
-    # session.query
-    # jam = session.query(MenuItem).filter(MenuItem.restaurant_id == 1,MenuItem.id == 1).one()
-    # restaurants = session.query(Restaurant).all()
     restaurants = session.query(MenuItem).all()
     return jsonify(restaurants=[r.serialize for r in restaurants])
-    # return jsonify(restaurants=[1,2,3,4,5,6])
 
-# @app.route('/restaurants/<int:restaurant_id>/menu/JSON')
-@app.route('/restaurants/menu/JSON')
-# def showRestaurantMenuJSON(restaurant_id):
-def showRestaurantMenuJSON():
-    # # print restaurant_id
-    # menu = session.query(MenuItem).join(MenuItem.restaurant).filter(Restaurant.id==restaurant_id).all()
-    # print menu
-    # for m in menu:
-    #     print m.name
-    # return jsonify(menu=[m.serialize for m in menu])
-    # # return "Hello World"
-    # restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
-    # menu = session.query(MenuItem).filter_by(restaurant_id=restaurant_id).all()
-    menu = session.query(MenuItem).all()
-    # print "test"
-    # menuitems = []
-    # for m in menu:
-    #     test = m.serialize
-    #     # menuitems.append[1]
-    #     menuitems.append(test)
+@app.route('/restaurants/<int:restaurant_id>/menu/JSON')
+def showRestaurantMenuJSON(restaurant_id):
+    menu = session.query(MenuItem).filter(MenuItem.restaurant_id==restaurant_id).all()
+    return jsonify(menu=[m.serialize for m in menu])
 
-    # print menu[1].serialize
-    # print items
-    # return jsonify(MenuItems=[i.serialize for i in items])
-    return jsonify(menu=menuitems)
-    # return jsonify(menu = [m.serialize for m in menu])
-    # return "Hello World"
-
-# @app.route('/restaurants/restaurant_id/menu/menu_id/JSON')
+@app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/JSON')
+def menuItemJSON(restaurant_id, menu_id):
+    menu_itemz = session.query(MenuItem).filter(MenuItem.id==menu_id).one()
+    return jsonify(Menu_Item=menu_itemz.serialize)
 
 
 if __name__ == '__main__':
