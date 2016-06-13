@@ -1,6 +1,17 @@
 body {
 /*font-family:sans-serif;*/
-background-image:url(bookBackground.jpg);
+font-family:'Raleway', serif;
+background-image:url(../pastel_pattern.JPG);
+text-align: center;
+}
+
+header{
+text-align: center;
+border-bottom:2px solid #000;
+/*padding: 30px;*/
+}
+.headerFont{
+font-family:'Indie Flower', cursive;
 }
 
 h1,h2,h3,h4 {
@@ -8,16 +19,21 @@ color:#000;
 }
 
 h1,h2 {
-font-family:Georgia, serif;
+/*font-family:Georgia, serif;*/
+font-family:'Raleway', serif;
 margin:0;
 }
 
 h1 {
-border-bottom:2px solid #eee;
+padding:20px;
 }
 
 h2 {
 font-size:1.2em;
+}
+
+h5.italic{
+	font-style: italic;
 }
 
 p {
@@ -61,3 +77,4 @@ float:right;
 .flash {
 background:#cee5F5;
 }
+

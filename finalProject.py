@@ -35,7 +35,8 @@ def editRestaurant(restaurant_id):
         restaurant.name = request.form['editRest']
         session.commit()
         return redirect(url_for('showRestaurants'))
-    return render_template('editRestaurants.html', restaurant_id = restaurant_id)
+    name = session.query(Restaurant.name).filter(Restaurant.id == restaurant_id).one()
+    return render_template('editRestaurants.html', restaurant_id = restaurant_id, name = name)
 
 @app.route('/restaurants/<int:restaurant_id>/delete', methods=['GET','POST'])
 def deleteRestaurant(restaurant_id):
@@ -77,6 +78,7 @@ def editMenuItem(restaurant_id, menu_id):
         session.commit()
         return redirect(url_for('showMenu', restaurant_id = restaurant_id))
     jam = session.query(MenuItem).filter(MenuItem.restaurant_id == restaurant_id,MenuItem.id == menu_id).one()
+    print jam.name
     return render_template('editMenuItem.html', restaurant_id = restaurant_id, menu_id = menu_id, jam = jam)
 
 @app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/delete', methods=['GET','POST'])
