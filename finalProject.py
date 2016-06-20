@@ -7,12 +7,20 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Restaurant, Base, MenuItem
 
+from flask import session as login_session
+import random, string
+
 # Create session and connect to DB
 engine = create_engine('sqlite:///restaurantmenu.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
+@app.route'(/login)
+def showLogin():
+    state = ''.join(ra.choice(tring.ascii_uppercase + string.digits) for x in xrange(32))
+    login_session['state'] = state
+    return "The current session state is %s" 
 
 @app.route('/')
 @app.route('/restaurants/')
@@ -122,4 +130,4 @@ def menuItemJSON(restaurant_id, menu_id):
 
 if __name__ == '__main__':
     app.debug = True
-    app.run(host = '0.0.0.0', port=5000 )
+    app.run(host = '0.0.0.0', port=5000)
