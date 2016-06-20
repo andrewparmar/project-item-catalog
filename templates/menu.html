@@ -1,13 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
 
+<!-- <h3>Menu for {{name[0]}}</h3> -->
 
-<h1> All Items </h1>
+<div class = 'flash'>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+          
+        <h5>
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+        </h5>
+        {% endif %}
+    {% endwith %}
+
+</div>
+
+<h1>{{name[0]}} Menu</h1>
 <a href="{{url_for('newMenuItem',restaurant_id = restaurant_id)}}">Add New Item</a></br></br>
 
           {% for item in menu %}
 
-            <h4>{{item.name}}</br></h4>
+            <h4 class="italic"><strong>{{item.name}}</strong></br></h4>
             <h5 class="italic">{{item.description}}</br></h5>
             <h5>{{item.price}}</br></h5>
             <h5>{{item.course}}</br></h5>

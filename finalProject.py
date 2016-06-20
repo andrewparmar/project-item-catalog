@@ -1,6 +1,7 @@
-from flask import Flask, render_template, url_for, request, redirect, jsonify
+from flask import Flask, render_template, url_for, request, redirect, jsonify, flash
 # import jsonify
 app = Flask(__name__)
+app.secret_key = 'super_secret_key'
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -25,6 +26,7 @@ def newRestaurant():
     if request.method == 'POST':
         newRestaurant = Restaurant(name = request.form['newRest'])
         session.add(newRestaurant)
+        flash("New Restaurant Created")
         session.commit()
         return redirect(url_for('showRestaurants'))
     return render_template('newRestaurants.html')
@@ -34,6 +36,7 @@ def editRestaurant(restaurant_id):
     if request.method == 'POST':
         restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one()
         restaurant.name = request.form['editRest']
+        flash("Restaurant Successfully Edited")
         session.commit()
         return redirect(url_for('showRestaurants'))
     name = session.query(Restaurant.name).filter(Restaurant.id == restaurant_id).one()
@@ -45,17 +48,20 @@ def deleteRestaurant(restaurant_id):
         try:
             restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one()
             session.delete(restaurant)
+            flash("Restaurant Successfully Deleted")
             session.commit()
             return redirect(url_for('showRestaurants'))
         except:
             return redirect(url_for('showRestaurants'))
     name = session.query(Restaurant.name).filter(Restaurant.id == restaurant_id).one()
+    print name
     return render_template('deleteRestaurants.html', restaurant_id = restaurant_id, name = name)
 
 @app.route('/restaurants/<int:restaurant_id>/menu')
 def showMenu(restaurant_id):
+    name = session.query(Restaurant.name).filter(Restaurant.id == restaurant_id).one()
     menu = session.query(MenuItem).join(MenuItem.restaurant).filter(Restaurant.id==restaurant_id).order_by(MenuItem.course)
-    return render_template('menu.html', restaurant_id = restaurant_id, menu = menu)
+    return render_template('menu.html', restaurant_id = restaurant_id, menu = menu, name = name)
 
 @app.route('/restaurants/<int:restaurant_id>/menu/new', methods=['GET','POST'])
 def newMenuItem(restaurant_id):
@@ -63,6 +69,7 @@ def newMenuItem(restaurant_id):
         newMenu = MenuItem(name = request.form['newItem'], restaurant_id = restaurant_id, description = request.form['newDescription'], price=request.form['newPrice'], course = request.form['course'])
         # newMenu = MenuItem(name = request.form['newItem'], restaurant_id = restaurant_id)
         session.add(newMenu)
+        flash("New Menu Item Created")
         session.commit()
         return redirect(url_for('showRestaurants'))
     name = session.query(Restaurant.name).filter(Restaurant.id == restaurant_id).one()
@@ -75,7 +82,8 @@ def editMenuItem(restaurant_id, menu_id):
         menuItem.name = request.form['editMenu']
         menuItem.description = request.form['editDescription'] 
         menuItem.price = request.form['editPrice'] 
-        menuItem.course = request.form['editCourse'] 
+        menuItem.course = request.form['editCourse']
+        flash("Menu Item Successfully Edited")
         session.commit()
         return redirect(url_for('showMenu', restaurant_id = restaurant_id))
     jam = session.query(MenuItem).filter(MenuItem.restaurant_id == restaurant_id,MenuItem.id == menu_id).one()
@@ -88,6 +96,7 @@ def deleteMenuItem(restaurant_id, menu_id):
         try:
             menuItem = session.query(MenuItem).filter(MenuItem.restaurant_id == restaurant_id,MenuItem.id == menu_id).one()
             session.delete(menuItem)
+            flash("Menu Item Successfully Deleted")
             session.commit()
             return redirect(url_for('showMenu', restaurant_id = restaurant_id))
         except:
@@ -112,5 +121,5 @@ def menuItemJSON(restaurant_id, menu_id):
 
 
 if __name__ == '__main__':
-	app.debug = True
-	app.run(host = '0.0.0.0', port=5000 )
+    app.debug = True
+    app.run(host = '0.0.0.0', port=5000 )
