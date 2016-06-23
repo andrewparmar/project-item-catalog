@@ -23,9 +23,15 @@
 
 
     <div id="signInButton">
-        <span class="g-signin" data-scope="openid email" data-clientid="486433826835-q0eqvj1lgvfpnovfs0mjmp5l3eksmhpn.apps.googleusercontent.com" data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback"
-        data-approvalprompt="force">
-  </span>
+        <span class="g-signin"
+            data-scope="openid email" 
+            data-clientid="486433826835-q0eqvj1lgvfpnovfs0mjmp5l3eksmhpn.apps.googleusercontent.com" 
+            data-redirecturi="postmessage" 
+            data-accesstype="offline" 
+            data-cookiepolicy="single_host_origin" 
+            data-callback="signInCallback"
+            data-approvalprompt="force">
+        </span>
     </div>
 
 
@@ -51,7 +57,7 @@
                         if (result) {
                             $('#result').html('Login Successful!</br>' + result + '</br>Redirecting...')
                             setTimeout(function() {
-                                window.location.href = "/restaurant";
+                                window.location.href = "/restaurants";
                             }, 4000);
 
                         } else if (authResult['error']) {

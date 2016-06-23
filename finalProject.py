@@ -17,7 +17,7 @@ import requests
 app = Flask(__name__)
 
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
-APPLICATION_NAME = "Hangry-Catalog"
+APPLICATION_NAME = "Restaurant Menu App"
 
 # Create session and connect to DB
 engine = create_engine('sqlite:///restaurantmenu.db')
@@ -30,7 +30,7 @@ def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))
     login_session['state'] = state
     # return "The current session state is %s" % login_session['state']
-    return render_template('login.html')
+    return render_template('login.html', STATE=state)
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
