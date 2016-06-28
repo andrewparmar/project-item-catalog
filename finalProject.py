@@ -161,6 +161,8 @@ def showRestaurants():
 
 @app.route('/restaurants/new', methods=['GET','POST'])
 def newRestaurant():
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         newRestaurant = Restaurant(name = request.form['newRest'])
         session.add(newRestaurant)
@@ -171,6 +173,8 @@ def newRestaurant():
 
 @app.route('/restaurants/<int:restaurant_id>/edit', methods=['GET','POST'])
 def editRestaurant(restaurant_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one()
         restaurant.name = request.form['editRest']
@@ -182,6 +186,8 @@ def editRestaurant(restaurant_id):
 
 @app.route('/restaurants/<int:restaurant_id>/delete', methods=['GET','POST'])
 def deleteRestaurant(restaurant_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         try:
             restaurant = session.query(Restaurant).filter(Restaurant.id == restaurant_id).one()
@@ -203,6 +209,8 @@ def showMenu(restaurant_id):
 
 @app.route('/restaurants/<int:restaurant_id>/menu/new', methods=['GET','POST'])
 def newMenuItem(restaurant_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         newMenu = MenuItem(name = request.form['newItem'], restaurant_id = restaurant_id, description = request.form['newDescription'], price=request.form['newPrice'], course = request.form['course'])
         # newMenu = MenuItem(name = request.form['newItem'], restaurant_id = restaurant_id)
@@ -215,6 +223,8 @@ def newMenuItem(restaurant_id):
 
 @app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/edit', methods=['GET','POST'])
 def editMenuItem(restaurant_id, menu_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         menuItem = session.query(MenuItem).filter(MenuItem.restaurant_id == restaurant_id,MenuItem.id == menu_id).one()
         menuItem.name = request.form['editMenu']
@@ -230,6 +240,8 @@ def editMenuItem(restaurant_id, menu_id):
 
 @app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/delete', methods=['GET','POST'])
 def deleteMenuItem(restaurant_id, menu_id):
+    if 'username' not in login_session:
+        return redirect('/login')
     if request.method == 'POST':
         try:
             menuItem = session.query(MenuItem).filter(MenuItem.restaurant_id == restaurant_id,MenuItem.id == menu_id).one()
