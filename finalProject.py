@@ -2,7 +2,7 @@ from flask import Flask, render_template, url_for, request, redirect, jsonify, f
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Restaurant, Base, MenuItem
+from database_setup import User, Restaurant, Base, MenuItem
 
 from flask import session as login_session
 import random, string
@@ -20,7 +20,7 @@ CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_i
 APPLICATION_NAME = "Restaurant Menu App"
 
 # Create session and connect to DB
-engine = create_engine('sqlite:///restaurantmenu.db')
+engine = create_engine('sqlite:///restaurantmenuwithusers.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
@@ -107,6 +107,18 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
+    # see if user exists, if it doesn't then create one
+    user_id = getUserID(login_session['email'])
+    if not user_id:
+        createUser(login_session)
+        print "New user created"
+    else:
+        print "User already exists as:"
+        print user_id
+        print getUserInfo(user_id)
+        login_session['user_id'] = user_id
+
+
     output = ''
     output += '<h1>Welcome, '
     output += login_session['username']
@@ -117,6 +129,29 @@ def gconnect():
     flash("you are now logged in as %s" % login_session['username'])
     print "done!"
     return output
+
+### User Helper Functions
+
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session[
+                   'email'], picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None
+
+##########################
 
 @app.route('/gdisconnect')
 def gdisconnect():
@@ -164,7 +199,7 @@ def newRestaurant():
     if 'username' not in login_session:
         return redirect('/login')
     if request.method == 'POST':
-        newRestaurant = Restaurant(name = request.form['newRest'])
+        newRestaurant = Restaurant(name = request.form['newRest'], user_id=login_session['user_id'])
         session.add(newRestaurant)
         flash("New Restaurant Created")
         session.commit()
@@ -212,7 +247,7 @@ def newMenuItem(restaurant_id):
     if 'username' not in login_session:
         return redirect('/login')
     if request.method == 'POST':
-        newMenu = MenuItem(name = request.form['newItem'], restaurant_id = restaurant_id, description = request.form['newDescription'], price=request.form['newPrice'], course = request.form['course'])
+        newMenu = MenuItem(name = request.form['newItem'], restaurant_id = restaurant_id, description = request.form['newDescription'], price=request.form['newPrice'], course = request.form['course'], user_id=login_session['user_id'])
         # newMenu = MenuItem(name = request.form['newItem'], restaurant_id = restaurant_id)
         session.add(newMenu)
         flash("New Menu Item Created")
