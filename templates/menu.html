@@ -17,7 +17,7 @@
 
 </div>
 
-<h1>{{name[0]}} Menu</h1>
+<h1>{{name}} Menu</h1>
 <a href="{{url_for('newMenuItem',restaurant_id = restaurant_id)}}">Add New Item</a></br></br>
 
           {% for item in menu %}
@@ -26,6 +26,9 @@
             <h5 class="italic">{{item.description}}</br></h5>
             <h5>{{item.price}}</br></h5>
             <h5>{{item.course}}</br></h5>
+            <div><img src="{{creator.picture}}" alt="Mountain View" class="circletag"></div>
+            
+            {{creator.name}}</br>
 
             <a href="{{url_for('editMenuItem',restaurant_id = restaurant_id, menu_id =item.id)}}">Edit</a>
             <a href="{{url_for('deleteMenuItem',restaurant_id = restaurant_id, menu_id =item.id)}}">Delete</a>

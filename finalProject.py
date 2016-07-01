@@ -190,6 +190,9 @@ def gdisconnect():
 @app.route('/')
 @app.route('/restaurants/')
 def showRestaurants():
+    if 'username' not in login_session:
+        restaurants = session.query(Restaurant).order_by(Restaurant.name.asc()).all()
+        return render_template('publicrestaurants.html', restaurants = restaurants)
     # restaurants = session.query(Restaurant).all()
     restaurants = session.query(Restaurant).order_by(Restaurant.name.asc()).all()
     return render_template('restaurants.html', restaurants = restaurants)
@@ -238,9 +241,18 @@ def deleteRestaurant(restaurant_id):
 
 @app.route('/restaurants/<int:restaurant_id>/menu')
 def showMenu(restaurant_id):
-    name = session.query(Restaurant.name).filter(Restaurant.id == restaurant_id).one()
-    menu = session.query(MenuItem).join(MenuItem.restaurant).filter(Restaurant.id==restaurant_id).order_by(MenuItem.course)
-    return render_template('menu.html', restaurant_id = restaurant_id, menu = menu, name = name)
+    # name = session.query(Restaurant.name).filter(Restaurant.id == restaurant_id).one()e
+    restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
+    # print restaurant.name
+    creator = getUserInfo(restaurant.user_id)
+    print creator.name
+    # print creator.name
+    if 'username' not in login_session or creator.id != login_session['user_id']:
+        menu = session.query(MenuItem).join(MenuItem.restaurant).filter(Restaurant.id==restaurant_id).order_by(MenuItem.course)
+        return render_template('publicmenu.html', restaurant_id = restaurant_id, menu = menu, name = restaurant.name)
+    else:
+        menu = session.query(MenuItem).join(MenuItem.restaurant).filter(Restaurant.id==restaurant_id).order_by(MenuItem.course)
+        return render_template('menu.html', restaurant_id = restaurant_id, menu = menu, name = restaurant.name, creator = creator)
 
 @app.route('/restaurants/<int:restaurant_id>/menu/new', methods=['GET','POST'])
 def newMenuItem(restaurant_id):
