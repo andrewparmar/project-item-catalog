@@ -17,10 +17,12 @@
         <header>
 
             <div class="col-md-12 text-right">
+                <br>
                 {%if 'username' not in session %}
-                <a href="{{url_for('showLogin')}}"><h5><strong>Login</strong></h5></a>
+                <!-- <button type="button" class="btn btn-primary">Primary</button> -->
+                <a href="{{url_for('showLogin')}}"><button type="button" class="btn btn-secondary btn-sm mutton">Login</button></a>
                 {% else %}
-                <a href="{{url_for('disconnect')}}"><h5><strong>Logout</strong></h6></a>
+                <a href="{{url_for('disconnect')}}"><button type="button" class="btn btn-secondary btn-sm mutton">Logout</button></a>
                 {% endif %}
             </div>
 
