@@ -1,29 +1,32 @@
 from flask import Flask, render_template, url_for, request, redirect, jsonify, flash
+from flask import session as login_session
+from flask import make_response
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import User, Restaurant, Base, MenuItem
 
-from flask import session as login_session
-import random, string
-
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
+
+import random, string
+import requests
 import httplib2
 import json
-from flask import make_response
-import requests
+
 
 app = Flask(__name__)
 
 CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Restaurant Menu App"
 
-# Create session and connect to DB
+### Create session and connect to DB
 engine = create_engine('sqlite:///restaurantmenuwithusers.db')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
+
+### Login & Logout Functions
 
 @app.route('/login')
 def showLogin():
@@ -31,6 +34,29 @@ def showLogin():
     login_session['state'] = state
     # return "The current session state is %s" % login_session['state']
     return render_template('login.html', STATE=state)
+
+# Disconnect based on provider
+@app.route('/disconnect')
+def disconnect():
+    if 'provider' in login_session:
+        if login_session['provider'] == 'google':
+            gdisconnect()
+            del login_session['gplus_id']
+            del login_session['credentials']
+        if login_session['provider'] == 'facebook':
+            fbdisconnect()
+            del login_session['facebook_id']
+        del login_session['username']
+        del login_session['email']
+        del login_session['picture']
+        del login_session['user_id']
+        del login_session['provider']
+        flash("You have successfully been logged out.")
+        return redirect(url_for('showRestaurants'))
+    else:
+        flash("You were not logged in")
+        return redirect(url_for('showRestaurants'))
+
 
 ### User Helper Functions
 
@@ -53,7 +79,8 @@ def getUserID(email):
     except:
         return None
 
-##########################
+
+### Begin OAuth Provider Functions
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
@@ -78,8 +105,8 @@ def gconnect():
 
     # Check that the access token is valid.
     access_token = credentials.access_token
-    # print "Access token is:"
-    # print access_token
+    # print "Access token is:"      # Uncomment these two lines
+    # print access_token            # to troubleshoot access token issues.
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
@@ -162,43 +189,6 @@ def gconnect():
     print "done!"
     return output
 
-# @app.route('/gdisconnect')
-# def gdisconnect():
-#     if login_session['access_token']:
-#         access_token = login_session['access_token']
-#     else:
-#         access_token = None
-#     print "Access token is:"
-#     print access_token
-#     # access_token = credentials.access_token
-#     print 'In gdisconnect access token is %s', access_token
-#     print 'User name is: '
-#     print login_session['username']
-#     if access_token is None:
-#         print 'Access Token is None'
-#         response = make_response(json.dumps('Current user not connected.'), 401)
-#         response.headers['Content-Type'] = 'application/json'
-#         return response
-#     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
-#     h = httplib2.Http()
-#     result = h.request(url, 'GET')[0]
-#     print 'result is '
-#     print result
-#     if result['status'] == '200':
-#         del login_session['access_token']
-#         del login_session['gplus_id']
-#         del login_session['username']
-#         del login_session['email']
-#         del login_session['picture']
-#         response = make_response(json.dumps('Successfully disconnected.'), 200)
-#         response.headers['Content-Type'] = 'application/json'
-#         return response
-#     else:
-
-#         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
-#         response.headers['Content-Type'] = 'application/json'
-#         return response
-
 @app.route('/gdisconnect')
 def gdisconnect():
     # Only disconnect a connected user.
@@ -219,7 +209,7 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-#### Facebook Connect
+# Facebook Connect
 @app.route('/fbconnect', methods=['POST'])
 def fbconnect():
     if request.args.get('state') != login_session['state']:
@@ -297,28 +287,8 @@ def fbdisconnect():
     result = h.request(url, 'DELETE')[1]
     return "you have been logged out"
 
-# Disconnect based on provider
-@app.route('/disconnect')
-def disconnect():
-    if 'provider' in login_session:
-        if login_session['provider'] == 'google':
-            gdisconnect()
-            del login_session['gplus_id']
-            del login_session['credentials']
-        if login_session['provider'] == 'facebook':
-            fbdisconnect()
-            del login_session['facebook_id']
-        del login_session['username']
-        del login_session['email']
-        del login_session['picture']
-        del login_session['user_id']
-        del login_session['provider']
-        flash("You have successfully been logged out.")
-        return redirect(url_for('showRestaurants'))
-    else:
-        flash("You were not logged in")
-        return redirect(url_for('showRestaurants'))
 
+### Application Route Functions
 @app.route('/')
 @app.route('/restaurants/')
 def showRestaurants():
@@ -368,16 +338,16 @@ def deleteRestaurant(restaurant_id):
         except:
             return redirect(url_for('showRestaurants'))
     name = session.query(Restaurant.name).filter(Restaurant.id == restaurant_id).one()
-    print name
+    # print name
     return render_template('deleteRestaurants.html', restaurant_id = restaurant_id, name = name)
 
 @app.route('/restaurants/<int:restaurant_id>/menu')
 def showMenu(restaurant_id):
     # name = session.query(Restaurant.name).filter(Restaurant.id == restaurant_id).one()e
     restaurant = session.query(Restaurant).filter_by(id = restaurant_id).one()
-    # print restaurant.name
+    print restaurant.name
     creator = getUserInfo(restaurant.user_id)
-    print creator.name
+    # print creator.name
     # print creator.name
     if 'username' not in login_session or creator.id != login_session['user_id']:
         menu = session.query(MenuItem).join(MenuItem.restaurant).filter(Restaurant.id==restaurant_id).order_by(MenuItem.course)

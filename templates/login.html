@@ -3,7 +3,7 @@
 
 <head>
 
-        <title>Flask Intro</title>
+    <title>Flask Intro</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../../../../static/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link href="../../../../static/css/custom.css" rel="stylesheet" media="screen">
@@ -18,7 +18,6 @@
 
     <!-- END PRE-REQUISITES FOR GOOGLE SIGN IN -->
 
-
 </head>
 
 
@@ -27,8 +26,8 @@
 
     <header>
 
-            <a href="http://localhost:5000/"><h1 class="headerFont">The Hangry Catalog</h1></a>
-            <h4>-the definitive guide to hanger management-</h4>
+        <a href="http://localhost:5000/"><h1 class="headerFont">The Hangry Catalog</h1></a>
+        <h4>-the definitive guide to hanger management-</h4>
 
     </header>
 
@@ -38,7 +37,8 @@
 
 
     <div id="signInButton">
-        <span class="g-signin" data-scope="openid email" data-clientid="486433826835-q0eqvj1lgvfpnovfs0mjmp5l3eksmhpn.apps.googleusercontent.com" data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback" data-approvalprompt="force">
+        <span class="g-signin" data-scope="openid email" data-clientid="486433826835-q0eqvj1lgvfpnovfs0mjmp5l3eksmhpn.apps.googleusercontent.com" data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback"
+        data-approvalprompt="force">
         </span>
     </div>
 
@@ -80,22 +80,16 @@
         }
     </script>
 
-<!--     <button>
 
+    <!--FACEBOOK SIGN IN -->
 
-
-
-
-    </button> -->
-
-<br>
-        <div>
-                    <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
+    <br>
+    <div>
+        <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
             <a href='javascript:sendTokenToServer()'>Sign In</a>
 
         </fb:login-button>
-        </div>    <!--FACEBOOK SIGN IN -->
-
+    </div>
 
 
     <script>
@@ -108,7 +102,7 @@
                 version: 'v2.4' // use version 2.2
             });
         };
-        // Load the SDK asynchronously
+         // Load the SDK asynchronously
         (function(d, s, id) {
             var js, fjs = d.getElementsByTagName(s)[0];
             if (d.getElementById(id)) return;
@@ -117,8 +111,8 @@
             js.src = "//connect.facebook.net/en_US/sdk.js";
             fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));
-        // Here we run a very simple test of the Graph API after login is
-        // successful.  See statusChangeCallback() for when this call is made.
+         // Here we run a very simple test of the Graph API after login is
+         // successful.  See statusChangeCallback() for when this call is made.
         function sendTokenToServer() {
             var access_token = FB.getAuthResponse()['accessToken'];
             console.log(access_token)
@@ -148,7 +142,6 @@
             });
         }
     </script>
-
 
 
     <!--END FACEBOOK SIGN IN -->
