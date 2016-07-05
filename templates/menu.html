@@ -3,7 +3,7 @@
 
 <!-- <h3>Menu for {{name[0]}}</h3> -->
 
-<div class = 'flash'>
+<!-- <div class = 'flash'>
     {% with messages = get_flashed_messages() %}
       {% if messages %}
           
@@ -16,9 +16,23 @@
     {% endwith %}
 
 </div>
+ -->
+
 
 <h1>{{name}} Menu</h1>
 <a href="{{url_for('newMenuItem',restaurant_id = restaurant_id)}}">Add New Item</a></br></br>
+
+<div class='flash'>
+    {% with messages = get_flashed_messages() %} {% if messages %}
+
+    
+        {% for message in messages %}
+            {{ message }}
+        {% endfor %}
+        
+    {% endif %} {% endwith %}
+
+</div>
 
           {% for item in menu %}
 
