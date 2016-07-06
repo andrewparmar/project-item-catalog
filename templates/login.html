@@ -2,7 +2,6 @@
 <html>
 
 <head>
-
     <title>Flask Intro</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../../../../static/css/bootstrap.min.css" rel="stylesheet" media="screen">
@@ -23,30 +22,41 @@
 
 <body>
 
+    <div class="container">
+        <header>
 
-    <header>
+            <a href="http://localhost:5000/"><h1 class="headerFont">The Hangry Catalog</h1></a>
+            <h4>-the definitive guide to hanger management-</h4>
 
-        <a href="http://localhost:5000/"><h1 class="headerFont">The Hangry Catalog</h1></a>
-        <h4>-the definitive guide to hanger management-</h4>
+        </header>
 
-    </header>
+        <h1>Login using your existing accounts</h1>
 
-    <h1>Login using your existing accounts</h1>
-
-    <!-- GOOGLE PLUS SIGN IN BUTTON-->
+        <!-- GOOGLE PLUS SIGN IN BUTTON-->
 
 
-    <div id="signInButton">
-        <span class="g-signin" data-scope="openid email" data-clientid="486433826835-q0eqvj1lgvfpnovfs0mjmp5l3eksmhpn.apps.googleusercontent.com" data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback"
-        data-approvalprompt="force">
+        <div id="signInButton">
+            <span class="g-signin" data-scope="openid email" data-clientid="486433826835-q0eqvj1lgvfpnovfs0mjmp5l3eksmhpn.apps.googleusercontent.com" data-redirecturi="postmessage" data-accesstype="offline" data-cookiepolicy="single_host_origin" data-callback="signInCallback"
+            data-approvalprompt="force">
         </span>
+        </div>
+
+        <!--END GOOGLE PLUS SIGN IN BUTTON -->
+
+
+        <div id="result"></div>
+
+        <br>
+        <div>
+            <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
+                <a href='javascript:sendTokenToServer()'>Sign In</a>
+
+            </fb:login-button>
+        </div>
     </div>
 
 
-    <div id="result"></div>
 
-
-    <!--END GOOGLE PLUS SIGN IN BUTTON -->
 
     <script>
         function signInCallback(authResult) {
@@ -83,13 +93,6 @@
 
     <!--FACEBOOK SIGN IN -->
 
-    <br>
-    <div>
-        <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
-            <a href='javascript:sendTokenToServer()'>Sign In</a>
-
-        </fb:login-button>
-    </div>
 
 
     <script>

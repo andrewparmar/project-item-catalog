@@ -20,9 +20,9 @@
                 <br>
                 {%if 'username' not in session %}
                 <!-- <button type="button" class="btn btn-primary">Primary</button> -->
-                <a href="{{url_for('showLogin')}}"><button type="button" class="btn btn-secondary btn-sm mutton">Login</button></a>
+                <a href="{{url_for('showLogin')}}"><button type="button" class="btn btn-secondary btn-sm">Login</button></a>
                 {% else %}
-                <a href="{{url_for('disconnect')}}"><button type="button" class="btn btn-secondary btn-sm mutton">Logout</button></a>
+                <a href="{{url_for('disconnect')}}"><button type="button" class="btn btn-secondary btn-sm">Logout</button></a>
                 {% endif %}
             </div>
 
