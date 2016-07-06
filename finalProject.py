@@ -351,7 +351,7 @@ def showMenu(restaurant_id):
     # print creator.name
     if 'username' not in login_session or creator.id != login_session['user_id']:
         menu = session.query(MenuItem).join(MenuItem.restaurant).filter(Restaurant.id==restaurant_id).order_by(MenuItem.course)
-        return render_template('publicmenu.html', restaurant_id = restaurant_id, menu = menu, name = restaurant.name)
+        return render_template('publicmenu.html', restaurant_id = restaurant_id, menu = menu, name = restaurant.name, creator = creator)
     else:
         menu = session.query(MenuItem).join(MenuItem.restaurant).filter(Restaurant.id==restaurant_id).order_by(MenuItem.course)
         return render_template('menu.html', restaurant_id = restaurant_id, menu = menu, name = restaurant.name, creator = creator)
