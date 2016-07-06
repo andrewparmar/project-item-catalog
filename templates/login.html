@@ -30,6 +30,18 @@
 
         </header>
 
+        <div class='flash'>
+            {% with messages = get_flashed_messages() %} {% if messages %}
+
+            
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+                
+            {% endif %} {% endwith %}
+
+        </div>
+
         <h1>Login using your existing accounts</h1>
 
         <!-- GOOGLE PLUS SIGN IN BUTTON-->
