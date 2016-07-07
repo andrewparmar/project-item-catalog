@@ -324,6 +324,10 @@ def login_required(f):
 @app.route('/')
 @app.route('/restaurants/')
 def showRestaurants():
+    '''
+    Returns a html template of a list of all the restaurants
+    in the database.
+    '''
     if 'username' not in login_session:
         restaurants = session.query(Restaurant).order_by(
             Restaurant.name.asc()).all()
@@ -338,6 +342,11 @@ def showRestaurants():
 @app.route('/restaurants/new', methods=['GET', 'POST'])
 @login_required
 def newRestaurant():
+    '''
+    Inserts a new item into the Restaurant table and if post is successfull,
+    retdirects to an updated restaurant list html page.
+    No arguments taken.
+    '''
     if request.method == 'POST':
         newRestaurant = Restaurant(
             name=request.form['newRest'], user_id=login_session['user_id'])
@@ -351,6 +360,11 @@ def newRestaurant():
 @app.route('/restaurants/<int:restaurant_id>/edit', methods=['GET', 'POST'])
 @login_required
 def editRestaurant(restaurant_id):
+    '''
+    Updates the name of a selected Restaurant from 
+    the Restaurant table in the database.
+    Arguement taken is restaurant id.
+    '''
     if request.method == 'POST':
         restaurant = session.query(Restaurant).filter(
             Restaurant.id == restaurant_id).one()
@@ -367,6 +381,10 @@ def editRestaurant(restaurant_id):
 @app.route('/restaurants/<int:restaurant_id>/delete', methods=['GET', 'POST'])
 @login_required
 def deleteRestaurant(restaurant_id):
+    '''
+    Deletes a selected Restaurant from the Restaurant table in the database.
+    Arguement taken is restaurant id.
+    '''
     if request.method == 'POST':
         try:
             restaurant = session.query(Restaurant).filter(
@@ -386,13 +404,13 @@ def deleteRestaurant(restaurant_id):
 
 @app.route('/restaurants/<int:restaurant_id>/menu')
 def showMenu(restaurant_id):
-    # name = session.query(Restaurant.name).filter(Restaurant.id ==
-    # restaurant_id).one()e
+    '''
+    Renders template shoiwng list of item in menu of selected restaurant.
+    Arguement taken is restaurant id.
+    '''
     restaurant = session.query(Restaurant).filter_by(id=restaurant_id).one()
     print restaurant.name
     creator = getUserInfo(restaurant.user_id)
-    # print creator.name
-    # print creator.name
     if 'username' not in login_session or \
        creator.id != login_session['user_id']:
         menu = session.query(MenuItem).join(MenuItem.restaurant).filter(
@@ -409,6 +427,11 @@ def showMenu(restaurant_id):
 @app.route('/restaurants/<int:restaurant_id>/menu/new', methods=['GET', 'POST'])
 @login_required
 def newMenuItem(restaurant_id):
+    '''
+    Inserts a new item into the MenuItem table and if post is successfull,
+    retdirects to an updated menu html page.
+    Arguement taken is restaurant id.
+    '''
     if request.method == 'POST':
         newMenu = MenuItem(name=request.form['newItem'], restaurant_id=restaurant_id,
                            description=request.form[
@@ -426,6 +449,11 @@ def newMenuItem(restaurant_id):
 @app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/edit', methods=['GET', 'POST'])
 @login_required
 def editMenuItem(restaurant_id, menu_id):
+    '''
+    Runs an update command on an exising menu item in the database
+    Arguments taken are the restaurant_id, and menu_id.
+    If post is successfull the ouput is redirection to the updated menu html page.
+    '''
     if request.method == 'POST':
         menuItem = session.query(MenuItem).filter(
             MenuItem.restaurant_id == restaurant_id, MenuItem.id == menu_id).one()
@@ -445,6 +473,11 @@ def editMenuItem(restaurant_id, menu_id):
 @app.route('/restaurants/<int:restaurant_id>/menu/<int:menu_id>/delete', methods=['GET', 'POST'])
 @login_required
 def deleteMenuItem(restaurant_id, menu_id):
+    '''
+    Deletes a single item from the MenuItem table in the database.
+    Arguments taken are the restaurant_id, and menu_id.
+    If post is successfull the ouput is redirection to the the update menu html page..
+    '''
     if request.method == 'POST':
         try:
             menuItem = session.query(MenuItem).filter(
@@ -459,6 +492,8 @@ def deleteMenuItem(restaurant_id, menu_id):
         MenuItem.restaurant_id == restaurant_id, MenuItem.id == menu_id).one()
     return render_template('deleteMenuItem.html', restaurant_id=restaurant_id, jam=jam)
 
+
+# JSON API endpoints
 
 @app.route('/restaurants/JSON')
 def showRestaurantsJSON():
