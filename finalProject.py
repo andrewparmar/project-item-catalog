@@ -1,6 +1,6 @@
-from flask import Flask, render_template, url_for, request, redirect, jsonify, flash
+from flask import Flask, render_template, url_for, request, redirect
 from flask import session as login_session
-from flask import make_response
+from flask import make_response, jsonify, flash
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -118,7 +118,8 @@ def gconnect():
     # print "Access token is:"      # Uncomment these two lines
     # print access_token            # to troubleshoot access token issues.
     url = (
-        'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % access_token)
+        'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' %
+        access_token)
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
     # If there was an error in the access token info, abort.
@@ -145,8 +146,8 @@ def gconnect():
     stored_credentials = login_session.get('credentials')
     stored_gplus_id = login_session.get('gplus_id')
     if stored_credentials is not None and gplus_id == stored_gplus_id:
-        response = make_response(json.dumps('Current user is already connected.'),
-                                 200)
+        response = make_response(json.dumps('Current user is already \
+            connected.'), 200)
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -195,7 +196,8 @@ def gconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;\
+        -webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
     flash("You are now logged in as %s" % login_session['username'])
     print "done!"
     return output
@@ -253,7 +255,6 @@ def fbconnect():
     print("url sent for API access:%s", url)
     print("API JSON result: %s", result)
     data = json.loads(result.decode('utf-8'))
-    #data = json.loads((h.request(url, 'GET')[1]).decode('utf-8'))
     login_session['provider'] = 'facebook'
     login_session['username'] = data["name"]
     login_session['email'] = data["email"]
@@ -287,7 +288,8 @@ def fbconnect():
     output += '!</h1>'
     output += '<img src="'
     output += login_session['picture']
-    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+    output += ' " style = "width: 300px; height: 300px;border-radius: 150px;\
+        -webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
 
     flash("Now logged in as %s" % login_session['username'])
     return output
@@ -305,6 +307,8 @@ def fbdisconnect():
     return "you have been logged out"
 
 # Application decorator functions
+
+
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
@@ -323,7 +327,8 @@ def showRestaurants():
     if 'username' not in login_session:
         restaurants = session.query(Restaurant).order_by(
             Restaurant.name.asc()).all()
-        return render_template('publicrestaurants.html', restaurants=restaurants)
+        return render_template('publicrestaurants.html',
+                               restaurants=restaurants)
     # restaurants = session.query(Restaurant).all()
     restaurants = session.query(Restaurant).order_by(
         Restaurant.name.asc()).all()
@@ -355,7 +360,8 @@ def editRestaurant(restaurant_id):
         return redirect(url_for('showRestaurants'))
     name = session.query(Restaurant.name).filter(
         Restaurant.id == restaurant_id).one()
-    return render_template('editRestaurants.html', restaurant_id=restaurant_id, name=name)
+    return render_template('editRestaurants.html', restaurant_id=restaurant_id,
+                           name=name)
 
 
 @app.route('/restaurants/<int:restaurant_id>/delete', methods=['GET', 'POST'])
@@ -374,7 +380,8 @@ def deleteRestaurant(restaurant_id):
     name = session.query(Restaurant.name).filter(
         Restaurant.id == restaurant_id).one()
     # print name
-    return render_template('deleteRestaurants.html', restaurant_id=restaurant_id, name=name)
+    return render_template('deleteRestaurants.html',
+                           restaurant_id=restaurant_id, name=name)
 
 
 @app.route('/restaurants/<int:restaurant_id>/menu')
@@ -386,23 +393,27 @@ def showMenu(restaurant_id):
     creator = getUserInfo(restaurant.user_id)
     # print creator.name
     # print creator.name
-    if 'username' not in login_session or creator.id != login_session['user_id']:
+    if 'username' not in login_session or \
+       creator.id != login_session['user_id']:
         menu = session.query(MenuItem).join(MenuItem.restaurant).filter(
             Restaurant.id == restaurant_id).order_by(MenuItem.course)
-        return render_template('publicmenu.html', restaurant_id=restaurant_id, menu=menu, name=restaurant.name, creator=creator)
+        return render_template('publicmenu.html', restaurant_id=restaurant_id,
+                               menu=menu, name=restaurant.name, creator=creator)
     else:
         menu = session.query(MenuItem).join(MenuItem.restaurant).filter(
             Restaurant.id == restaurant_id).order_by(MenuItem.course)
-        return render_template('menu.html', restaurant_id=restaurant_id, menu=menu, name=restaurant.name, creator=creator)
+        return render_template('menu.html', restaurant_id=restaurant_id,
+                               menu=menu, name=restaurant.name, creator=creator)
 
 
 @app.route('/restaurants/<int:restaurant_id>/menu/new', methods=['GET', 'POST'])
 @login_required
 def newMenuItem(restaurant_id):
     if request.method == 'POST':
-        newMenu = MenuItem(name=request.form['newItem'], restaurant_id=restaurant_id, description=request.form[
-                           'newDescription'], price=request.form['newPrice'], course=request.form['course'], user_id=login_session['user_id'])
-        # newMenu = MenuItem(name = request.form['newItem'], restaurant_id = restaurant_id)
+        newMenu = MenuItem(name=request.form['newItem'], restaurant_id=restaurant_id,
+                           description=request.form[
+                               'newDescription'], price=request.form['newPrice'],
+                           course=request.form['course'], user_id=login_session['user_id'])
         session.add(newMenu)
         flash("New Menu Item Created")
         session.commit()
